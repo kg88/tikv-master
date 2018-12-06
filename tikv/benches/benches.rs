@@ -11,55 +11,47 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#![feature(box_syntax)]
 #![feature(test)]
 
-extern crate crc;
-extern crate futures;
-extern crate futures_cpupool;
-extern crate grpcio as grpc;
+extern crate arrow;
+extern crate byteorder;
+extern crate crossbeam_channel;
 extern crate kvproto;
-#[macro_use]
 extern crate log;
+extern crate mio;
+extern crate num_traits;
 extern crate protobuf;
 extern crate raft;
 extern crate rand;
 extern crate rocksdb;
-extern crate slog;
 extern crate tempdir;
 extern crate test;
 extern crate tipb;
-extern crate toml;
-extern crate uuid;
 
-#[macro_use]
-extern crate tikv;
+extern crate cop_datatype;
 extern crate test_coprocessor;
-extern crate test_raftstore;
 extern crate test_storage;
-#[macro_use]
 extern crate test_util;
+extern crate tikv;
 
-mod config;
+mod channel;
 mod coprocessor;
-mod import;
-mod pd;
-mod raftstore;
+mod raftkv;
+mod serialization;
 mod storage;
+mod writebatch;
 
-// The prefix "_" here is to guarantee running this case first.
-#[test]
-fn _0_ci_setup() {
-    test_util::setup_for_ci();
+use test::Bencher;
+
+use test_util::KvGenerator;
+
+#[bench]
+fn _bench_check_requirement(_: &mut test::Bencher) {
+    tikv::util::config::check_max_open_fds(4096).unwrap();
 }
 
-#[test]
-fn _1_check_system_requirement() {
-    if let Err(e) = tikv::util::config::check_max_open_fds(4096) {
-        panic!(
-            "To run test, please make sure the maximum number of open file descriptors not \
-             less than 2000: {:?}",
-            e
-        );
-    }
+#[bench]
+fn bench_kv_iter(b: &mut Bencher) {
+    let mut g = KvGenerator::new(100, 1000);
+    b.iter(|| g.next());
 }

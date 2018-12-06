@@ -11,17 +11,14 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use rand::prelude::*;
-use rand::IsaacRng;
+use rand::{self, Rng, ThreadRng};
 
 /// A random generator of kv.
-///
-/// Every iteration should be taken in µs.
-#[derive(Clone, Debug)]
+/// Every iter should be taken in µs. See also `benches::bench_kv_iter`.
 pub struct KvGenerator {
     key_len: usize,
     value_len: usize,
-    rng: IsaacRng,
+    rng: ThreadRng,
 }
 
 impl KvGenerator {
@@ -29,23 +26,8 @@ impl KvGenerator {
         KvGenerator {
             key_len,
             value_len,
-            rng: FromEntropy::from_entropy(),
+            rng: rand::thread_rng(),
         }
-    }
-
-    pub fn with_seed(key_len: usize, value_len: usize, seed: u64) -> KvGenerator {
-        KvGenerator {
-            key_len,
-            value_len,
-            rng: IsaacRng::new_from_u64(seed),
-        }
-    }
-
-    /// Generate n pair of KVs.
-    ///
-    /// This function consumes current generator.
-    pub fn generate(self, n: usize) -> Vec<(Vec<u8>, Vec<u8>)> {
-        self.take(n).collect()
     }
 }
 
@@ -62,13 +44,8 @@ impl Iterator for KvGenerator {
     }
 }
 
-#[cfg(test)]
-mod tests {
-    use super::*;
-    use test::Bencher;
-    #[bench]
-    fn bench_kv_generator(b: &mut Bencher) {
-        let mut g = KvGenerator::new(100, 1000);
-        b.iter(|| g.next());
-    }
+/// Generate n pair of kvs.
+pub fn generate_random_kvs(n: usize, key_len: usize, value_len: usize) -> Vec<(Vec<u8>, Vec<u8>)> {
+    let kv_generator = KvGenerator::new(key_len, value_len);
+    kv_generator.take(n).collect()
 }

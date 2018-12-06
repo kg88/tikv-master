@@ -256,10 +256,9 @@ pub fn check_region_epoch(
             | AdminCmdType::InvalidAdmin
             | AdminCmdType::ComputeHash
             | AdminCmdType::VerifyHash => {}
+            AdminCmdType::Split | AdminCmdType::BatchSplit => check_ver = true,
             AdminCmdType::ChangePeer => check_conf_ver = true,
-            AdminCmdType::Split
-            | AdminCmdType::BatchSplit
-            | AdminCmdType::PrepareMerge
+            AdminCmdType::PrepareMerge
             | AdminCmdType::CommitMerge
             | AdminCmdType::RollbackMerge
             | AdminCmdType::TransferLeader => {
@@ -1604,7 +1603,6 @@ mod tests {
         // These admin commands requires epoch.version.
         for ty in &[
             AdminCmdType::Split,
-            AdminCmdType::BatchSplit,
             AdminCmdType::PrepareMerge,
             AdminCmdType::CommitMerge,
             AdminCmdType::RollbackMerge,
@@ -1631,8 +1629,6 @@ mod tests {
 
         // These admin commands requires epoch.conf_version.
         for ty in &[
-            AdminCmdType::Split,
-            AdminCmdType::BatchSplit,
             AdminCmdType::ChangePeer,
             AdminCmdType::PrepareMerge,
             AdminCmdType::CommitMerge,

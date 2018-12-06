@@ -1,6 +1,6 @@
 [package]
 name = "tikv"
-version = "3.0.0-alpha"
+version = "2.1.0-rc.2"
 keywords = ["KV", "distributed-systems", "raft"]
 publish = false
 
@@ -23,27 +23,16 @@ name = "tikv-ctl"
 [[bin]]
 name = "tikv-importer"
 
-[[test]]
-name = "failpoints"
-path = "tests/failpoints/mod.rs"
-
-[[test]]
-name = "integrations"
-path = "tests/integrations/mod.rs"
-
 [[bench]]
 name = "raftstore"
 harness = false
-path = "benches/raftstore/mod.rs"
 
 [[bench]]
 name = "coprocessor_executors"
 harness = false
-path = "benches/coprocessor_executors/mod.rs"
 
 [[bench]]
-name = "misc"
-path = "benches/misc/mod.rs"
+name = "benches"
 
 [dependencies]
 log = { version = "0.3", features = ["release_max_level_debug"] }
@@ -87,7 +76,7 @@ bitflags = "1.0.1"
 fail = "0.2"
 uuid = { version = "0.6", features = [ "serde", "v4" ] }
 grpcio = { version = "0.4", features = [ "secure" ] }
-raft = "0.4"
+raft = "0.3"
 crossbeam-channel = "0.2"
 crossbeam = "0.2"
 fxhash = "0.2"
@@ -101,7 +90,9 @@ base64 = "0.10"
 safemem = "0.3"
 cop_datatype = { path = "components/cop_datatype" }
 smallvec = { version = "0.6", features = ["union"] }
-flate2 = { version = "1.0", features = ["zlib"], default-features = false }
+
+[replace]
+"raft:0.3.1" = { git = "https://github.com/pingcap/raft-rs.git" }
 
 [dependencies.murmur3]
 git = "https://github.com/pingcap/murmur3.git"

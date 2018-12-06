@@ -33,7 +33,7 @@ extern crate test_util;
 extern crate tikv;
 
 #[cfg(not(feature = "no-fail"))]
-mod cases;
+mod failpoints_cases;
 
 use std::sync::*;
 use std::thread;

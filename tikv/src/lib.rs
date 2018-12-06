@@ -119,7 +119,6 @@ extern crate smallvec;
 
 extern crate base64;
 extern crate cop_datatype;
-extern crate flate2;
 extern crate panic_hook;
 extern crate safemem;
 

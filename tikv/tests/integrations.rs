@@ -11,37 +11,54 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+#![feature(box_syntax)]
 #![feature(test)]
 
-extern crate arrow;
-extern crate byteorder;
-extern crate crossbeam_channel;
+extern crate crc;
+extern crate futures;
+extern crate futures_cpupool;
+extern crate grpcio as grpc;
 extern crate kvproto;
+#[macro_use]
 extern crate log;
-extern crate mio;
-extern crate num_traits;
 extern crate protobuf;
 extern crate raft;
 extern crate rand;
 extern crate rocksdb;
+extern crate slog;
 extern crate tempdir;
 extern crate test;
 extern crate tipb;
+extern crate toml;
+extern crate uuid;
 
-extern crate cop_datatype;
+#[macro_use]
+extern crate tikv;
 extern crate test_coprocessor;
+extern crate test_raftstore;
 extern crate test_storage;
 extern crate test_util;
-extern crate tikv;
 
-mod channel;
+mod config;
 mod coprocessor;
-mod raftkv;
-mod serialization;
-mod storage;
-mod writebatch;
+mod import;
+mod pd;
+mod raftstore_cases;
+mod storage_cases;
 
-#[bench]
-fn _bench_check_requirement(_: &mut test::Bencher) {
-    tikv::util::config::check_max_open_fds(4096).unwrap();
+// The prefix "_" here is to guarantee running this case first.
+#[test]
+fn _0_ci_setup() {
+    test_util::setup_for_ci();
+}
+
+#[test]
+fn _1_check_system_requirement() {
+    if let Err(e) = tikv::util::config::check_max_open_fds(4096) {
+        panic!(
+            "To run test, please make sure the maximum number of open file descriptors not \
+             less than 2000: {:?}",
+            e
+        );
+    }
 }

@@ -27,9 +27,8 @@ use test_raftstore::*;
 fn test_follower_slow_split() {
     let _guard = ::setup();
     let mut cluster = new_node_cluster(0, 3);
-    let pd_client = Arc::clone(&cluster.pd_client);
-    pd_client.disable_default_operator();
     cluster.run();
+    let pd_client = Arc::clone(&cluster.pd_client);
     let region = cluster.get_region(b"");
 
     // Only need peer 1 and 3. Stop node 2 to avoid extra vote messages.

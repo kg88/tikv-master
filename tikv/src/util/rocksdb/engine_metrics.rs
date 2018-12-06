@@ -1178,11 +1178,6 @@ lazy_static! {
         "Number of corrupt keys during compaction",
         &["db", "cf"]
     ).unwrap();
-    pub static ref STORE_ENGINE_COMPACTION_REASON_VEC: IntCounterVec = register_int_counter_vec!(
-        "tikv_engine_compaction_reason",
-        "Number of compaction reason",
-        &["db", "cf", "reason"]
-    ).unwrap();
     pub static ref STORE_ENGINE_LOCATE_VEC: IntCounterVec = register_int_counter_vec!(
         "tikv_engine_locate",
         "Number of calls to seek/next/prev",

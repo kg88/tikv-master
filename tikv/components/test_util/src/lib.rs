@@ -11,10 +11,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#![cfg_attr(test, feature(test))]
-#[cfg(test)]
-extern crate test;
-
 extern crate rand;
 #[macro_use]
 extern crate slog;
@@ -25,14 +21,12 @@ extern crate tikv;
 
 mod kv_generator;
 mod logging;
-mod macros;
 mod security;
 
 use std::env;
 
 pub use kv_generator::*;
 pub use logging::*;
-pub use macros::*;
 pub use security::*;
 
 pub fn setup_for_ci() {
